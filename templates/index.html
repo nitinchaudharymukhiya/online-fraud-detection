@@ -1,0 +1,141 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShieldAI | Fraud Detection</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header class="navbar">
+        <a class="brand" href="/">
+            <span class="brand-icon">S</span>
+            <span>Shield<span class="accent">AI</span></span>
+        </a>
+        <span class="status"><span class="dot"></span> DEMO SYSTEM ONLINE</span>
+    </header>
+
+    <main class="container">
+        <section class="hero">
+            <div class="eyebrow">INTELLIGENT TRANSACTION SECURITY</div>
+            <h1>Online Fraud <span class="accent">Detection</span></h1>
+            <p>Analyze transaction signals and estimate potential fraud risk in seconds.</p>
+        </section>
+
+        <section class="dashboard">
+            <div class="form-panel">
+                <div class="panel-heading">
+                    <div>
+                        <span class="section-label">TRANSACTION ANALYSIS</span>
+                        <h2>Enter transaction details</h2>
+                    </div>
+                    <span class="shield">✦</span>
+                </div>
+
+                <form method="POST">
+                    <div class="field">
+                        <label for="amount">Transaction Amount (₹)</label>
+                        <input id="amount" name="amount" type="number"
+                               min="1" max="10000000" step="0.01"
+                               value="{{ form_data.amount }}" required>
+                    </div>
+
+                    <div class="field-grid">
+                        <div class="field">
+                            <label for="transaction_location">Transaction Location</label>
+                            <select id="transaction_location" name="transaction_location">
+                                <option value="1" {% if form_data.transaction_location == "1" %}selected{% endif %}>Usual region</option>
+                                <option value="0" {% if form_data.transaction_location == "0" %}selected{% endif %}>Different region</option>
+                            </select>
+                        </div>
+
+                        <div class="field">
+                            <label for="usual_location">Usual Location</label>
+                            <select id="usual_location" name="usual_location">
+                                <option value="1" {% if form_data.usual_location == "1" %}selected{% endif %}>Matches usual region</option>
+                                <option value="0" {% if form_data.usual_location == "0" %}selected{% endif %}>Does not match</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label for="transactions_last_hour">Transactions in Last Hour</label>
+                        <input id="transactions_last_hour" name="transactions_last_hour"
+                               type="number" min="0" max="100"
+                               value="{{ form_data.transactions_last_hour }}" required>
+                    </div>
+
+                    <div class="field-grid">
+                        <div class="field">
+                            <label for="new_device">New Device?</label>
+                            <select id="new_device" name="new_device">
+                                <option value="0" {% if form_data.new_device == "0" %}selected{% endif %}>No</option>
+                                <option value="1" {% if form_data.new_device == "1" %}selected{% endif %}>Yes</option>
+                            </select>
+                        </div>
+
+                        <div class="field">
+                            <label for="otp_verified">OTP Verified?</label>
+                            <select id="otp_verified" name="otp_verified">
+                                <option value="1" {% if form_data.otp_verified == "1" %}selected{% endif %}>Yes</option>
+                                <option value="0" {% if form_data.otp_verified == "0" %}selected{% endif %}>No</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    {% if error %}
+                    <div class="message error">{{ error }}</div>
+                    {% endif %}
+
+                    <button type="submit">Analyze Transaction <span>→</span></button>
+                </form>
+            </div>
+
+            <aside class="result-panel">
+                <div class="section-label">ANALYSIS RESULT</div>
+                {% if result %}
+                    {% if result.is_fraud %}
+                    <div class="result-icon danger">!</div>
+                    <h2 class="danger-text">Potential Fraud Detected</h2>
+                    <p>The demo model has flagged this transaction for review.</p>
+                    {% else %}
+                    <div class="result-icon success">✓</div>
+                    <h2 class="success-text">No Fraud Flagged</h2>
+                    <p>The demo model did not flag this transaction. This does not guarantee safety.</p>
+                    {% endif %}
+
+                    <div class="risk-card">
+                        <div class="risk-row">
+                            <span>Estimated fraud probability</span>
+                            <strong>{{ result.risk }}%</strong>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-fill {% if result.is_fraud %}fill-danger{% endif %}"
+                                 style="width: {{ result.risk }}%"></div>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="result-icon neutral">⌁</div>
+                    <h2>Ready to Analyze</h2>
+                    <p>Enter transaction details and run the analysis to see the model's estimate.</p>
+                    <div class="placeholder-card">
+                        <span class="pulse"></span>
+                        Awaiting transaction input
+                    </div>
+                {% endif %}
+
+                <div class="info-card">
+                    <span class="info-symbol">ⓘ</span>
+                    <div>
+                        <strong>Educational Demo</strong>
+                        <p>This project uses synthetic data. Results are illustrative, not a real banking security decision.</p>
+                    </div>
+                </div>
+            </aside>
+        </section>
+
+        <footer>ShieldAI · Student Project · AI-Assisted Transaction Risk Demo</footer>
+    </main>
+</body>
+</html>
